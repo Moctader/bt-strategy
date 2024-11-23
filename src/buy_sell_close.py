@@ -53,33 +53,6 @@ class Strategy:
             share_price = signal_data['prediction']
             next_share_price = signal_data['next_prediction']
 
-            if self.flag:
-                # If in short sell position, wait until next_share_price > share_price to cover short
-                if next_share_price > share_price:
-                    short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price
-                    if short_sell_profit > 0:
-                        self.capital += short_sell_profit
-                        transactions.append({
-                            'action': 'cover_short',
-                            'shares': self.borrowed_shares,
-                            'price': share_price,
-                            'capital': self.capital,
-                            'profit': short_sell_profit,
-                            'flag': False
-                        })
-                        self.borrowed_shares = 0
-                        self.flag = False  # Turn off flag after covering short
-                else:
-                    # Hold condition during short sell
-                    transactions.append({
-                        'action': 'hold',
-                        'shares': self.position,
-                        'price': share_price,
-                        'capital': self.capital,
-                        'position': self.position,
-                        'flag': self.flag
-                    })
-                continue  
 
             if signal == 1 and self.capital > share_price + self.transaction_fee:
                 # Buy shares if the signal is 1 and there is enough capital
@@ -126,6 +99,36 @@ class Strategy:
                     'capital': self.capital,
                     'flag': self.flag
                 })
+
+
+                if self.flag:
+                    # If in short sell position, wait until next_share_price > share_price to cover short
+                    if next_share_price > share_price:
+                        short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price
+                        if short_sell_profit > 0:
+                            self.capital += short_sell_profit
+                            transactions.append({
+                                'action': 'cover_short',
+                                'shares': self.borrowed_shares,
+                                'price': share_price,
+                                'capital': self.capital,
+                                'profit': short_sell_profit,
+                                'flag': False
+                            })
+                            self.borrowed_shares_liquidation=0
+                            self.borrowed_shares = 0
+                            self.flag = False  # Turn off flag after covering short
+                    else:
+                        # Hold condition during short sell
+                        transactions.append({
+                            'action': 'hold',
+                            'shares': self.position,
+                            'price': share_price,
+                            'capital': self.capital,
+                            'position': self.position,
+                            'flag': self.flag
+                        })
+                    continue  
 
             else:
                 # Hold condition

@@ -6,7 +6,7 @@ from plotting import plot_transactions
 from profit_and_loss import ProfitAndLoss
 
 def main():
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10_000)
+    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100)
 
     # Initialize key components
     signal_generator = SignalGenerator()
@@ -16,14 +16,14 @@ def main():
     signals = signal_generator.generate_signals(data)
     strategy_df = pd.DataFrame(strategy.execute(pd.DataFrame(signals)))
     results = profit_and_loss.calculate(strategy_df)
+
     df = pd.DataFrame(results)
+    
 
 
     # Align the index with the timestamp from the original data
     df.index = pd.to_datetime(data['timestamp'].iloc[:len(df)])
-    plot_transactions(strategy_df)
-
-
+    plot_transactions(df)
 
 
     # Calculate returns based on share price data
@@ -35,9 +35,10 @@ def main():
 
     # Display a summary of the performance metrics
     print(perf.display())
+    profit_and_loss.save_to_yaml()
 
     # Additional output for debugging or analysis
-    print(strategy_df)
+    print(strategy_df[60:80])
     print(df)
 
 

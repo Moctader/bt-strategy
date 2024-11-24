@@ -47,12 +47,11 @@ class TradeManager:
         self.in_short_position = True
         self.borrowed_shares = 10
         self.borrowed_shares_liquidation = self.borrowed_shares * share_price
-        self.capital -= self.transaction_fee  # Deduct transaction fee for short sell
         self.add_transaction(transactions, 'short_sell', self.borrowed_shares, share_price)
 
     # Cover short sell position based on the borrowed shares and share price 
     def cover_short(self, transactions, share_price):
-        short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price
+        short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price + self.transaction_fee
         if short_sell_profit > 0:
             self.capital += short_sell_profit
             self.add_transaction(transactions, 'cover_short', self.borrowed_shares, share_price, short_sell_profit, False)

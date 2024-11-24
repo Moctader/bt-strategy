@@ -1,4 +1,17 @@
 class ProfitAndLoss:
+    def add_pnl_data(self, pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, profit=0, in_short_position=None):
+        pnl_data.append({
+            'action': action,
+            'shares': shares,
+            'price': price,
+            'capital': capital,
+            'position': position,
+            'point_pnl': point_pnl,
+            'cumulative_pnl': cumulative_pnl,
+            'profit': profit,
+            'in_short_position': in_short_position
+        })
+
     def calculate(self, transactions):
         pnl_data = []
         cumulative_pnl = 0
@@ -6,70 +19,36 @@ class ProfitAndLoss:
         for index, transaction in transactions.iterrows():
             point_pnl = 0  # Reset point-to-point PnL for each transaction
 
-            if transaction['action'] == 'buy':
+            action = transaction['action']
+            shares = transaction['shares']
+            price = transaction['price']
+            capital = transaction['capital']
+            position = transaction['position']
+            profit = transaction.get('profit', 0)
+            in_short_position = transaction.get('in_short_position', None)
+
+            if action == 'buy':
                 # No immediate profit/loss when buying, so point_pnl is 0
-                pnl_data.append({
-                    'action': 'buy',
-                    'shares': transaction['shares'],
-                    'price': transaction['price'],
-                    'capital': transaction['capital'],
-                    'position': transaction['position'],
-                    'point_pnl': point_pnl,
-                    'cumulative_pnl': cumulative_pnl
-                })
+                self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl)
 
-            elif transaction['action'] == 'sell':
+            elif action == 'sell':
                 # Calculate point-to-point PnL for the sell action
-                point_pnl = transaction['profit']  # Profit calculated during the sell
+                point_pnl = profit  # Profit calculated during the sell
                 cumulative_pnl += point_pnl  # Update cumulative PnL
-                pnl_data.append({
-                    'action': 'sell',
-                    'shares': transaction['shares'],
-                    'price': transaction['price'],
-                    'profit': transaction['profit'],
-                    'capital': transaction['capital'],
-                    'point_pnl': point_pnl,
-                    'cumulative_pnl': cumulative_pnl
-                })
+                self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, profit)
 
-            elif transaction['action'] == 'short_sell':
+            elif action == 'short_sell':
                 # No immediate profit/loss when initiating a short sell, so point_pnl is 0
-                pnl_data.append({
-                    'action': 'short_sell',
-                    'shares': transaction['shares'],
-                    'price': transaction['price'],
-                    'capital': transaction['capital'],
-                    'in_short_position': transaction['in_short_position'],
-                    'point_pnl': point_pnl,
-                    'cumulative_pnl': cumulative_pnl
-                })
+                self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, in_short_position=in_short_position)
 
-            elif transaction['action'] == 'cover_short':
+            elif action == 'cover_short':
                 # Calculate point-to-point PnL for covering a short
-                point_pnl = transaction['profit']  # Profit from covering the short position
+                point_pnl = profit  # Profit from covering the short position
                 cumulative_pnl += point_pnl  # Update cumulative PnL
-                pnl_data.append({
-                    'action': 'cover_short',
-                    'shares': transaction['shares'],
-                    'price': transaction['price'],
-                    'profit': transaction['profit'],
-                    'capital': transaction['capital'],
-                    'in_short_position': transaction['in_short_position'],
-                    'point_pnl': point_pnl,
-                    'cumulative_pnl': cumulative_pnl
-                })
+                self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, profit, in_short_position)
 
-            elif transaction['action'] == 'hold':
+            elif action == 'hold':
                 # No immediate profit/loss when holding, so point_pnl is 0
-                pnl_data.append({
-                    'action': 'hold',
-                    'shares': transaction['shares'],
-                    'price': transaction['price'],
-                    'capital': transaction['capital'],
-                    'position': transaction['position'],
-                    'in_short_position': transaction['in_short_position'],
-                    'point_pnl': point_pnl,
-                    'cumulative_pnl': cumulative_pnl
-                })
+                self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, in_short_position=in_short_position)
 
         return pnl_data

@@ -3,7 +3,7 @@ class ProfitAndLoss:
         pnl_data.append({
             'action': action,
             'shares': shares,
-            'price': price,
+            'share_price': price,
             'capital': capital,
             'position': position,
             'point_pnl': point_pnl,
@@ -21,7 +21,7 @@ class ProfitAndLoss:
 
             action = transaction['action']
             shares = transaction['shares']
-            price = transaction['price']
+            price = transaction['share_price']
             capital = transaction['capital']
             position = transaction['position']
             profit = transaction.get('profit', 0)

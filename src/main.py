@@ -26,39 +26,13 @@ strategy_df = strategy.execute(signals)
 # Calculate PnL
 results = pnl_calculator.calculate(strategy_df)
 df = pd.DataFrame(results)
+print(df.columns)
+returns=df['percentage_return']
+#print(returns)
+perf = returns.to_frame('strategy')
+stats = perf.calc_stats()
+
 plot_strategy_results(df)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -71,7 +45,7 @@ signals_df = pd.DataFrame(signals)
 # print(signals_df)
 # print(signals_df[signals_df['signal'] == -1])
 # print(pd.DataFrame(strategy_df))
-# print(df)
+#print(df[10:40])
 # print("\nFirst 15 rows of the results:")
 # print(df.head(15))
 

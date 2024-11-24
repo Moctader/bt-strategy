@@ -1,5 +1,3 @@
-
-
 class Strategy:
     def __init__(self, initial_capital=100000, transaction_fee=2):
         self.capital = initial_capital
@@ -7,9 +5,55 @@ class Strategy:
         self.position = 0
         self.shares = 0
         self.borrowed_shares = 0
-        self.flag = False
+        self.in_short_position = False
         self.buy_prices = 0
         self.borrowed_shares_liquidation = 0
+
+    def add_transaction(self, transactions, action, shares, price, profit=0, in_short_position=None):
+        transaction = {
+            'action': action,
+            'shares': shares,
+            'price': price,
+            'capital': self.capital,
+            'position': self.position,
+            'profit': profit,
+            'in_short_position': self.in_short_position if in_short_position is None else in_short_position
+        }
+        transactions.append(transaction)
+
+    def buy(self, transactions, share_price):
+        number_of_shares = (self.capital - self.transaction_fee) // share_price
+        self.position += number_of_shares
+        self.capital -= number_of_shares * share_price + self.transaction_fee
+        self.buy_prices += number_of_shares * share_price
+        self.add_transaction(transactions, 'buy', number_of_shares, share_price)
+
+    def sell(self, transactions, share_price):
+        total_sell_price = self.position * share_price
+        profit = total_sell_price - (self.buy_prices + self.transaction_fee)
+        if profit > 0:
+            self.capital += total_sell_price - self.transaction_fee
+            self.add_transaction(transactions, 'sell', self.position, share_price, profit)
+            self.position = 0  # Reset position after selling
+            self.buy_prices = 0
+
+    def short_sell(self, transactions, share_price):
+        self.in_short_position = True
+        self.borrowed_shares = 10
+        self.borrowed_shares_liquidation = self.borrowed_shares * share_price
+        self.capital -= self.transaction_fee  # Deduct transaction fee for short sell
+        self.add_transaction(transactions, 'short_sell', self.borrowed_shares, share_price)
+
+    def cover_short(self, transactions, share_price):
+        short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price
+        if short_sell_profit > 0:
+            self.capital += short_sell_profit
+            self.add_transaction(transactions, 'cover_short', self.borrowed_shares, share_price, short_sell_profit, False)
+            self.borrowed_shares = 0
+            self.in_short_position = False  # Turn off flag after covering short
+
+    def hold(self, transactions, share_price):
+        self.add_transaction(transactions, 'hold', self.position, share_price)
 
     def execute(self, signals):
         transactions = []
@@ -20,90 +64,20 @@ class Strategy:
             next_share_price = signal_data['next_prediction']
 
             # If in short sell position, wait until next_share_price > share_price to cover short
-            if self.flag:
-               
+            if self.in_short_position:
                 if next_share_price > share_price:
-                    short_sell_profit = self.borrowed_shares_liquidation - self.borrowed_shares * share_price
-                    if short_sell_profit > 0:
-                        self.capital += short_sell_profit
-                        transactions.append({
-                            'action': 'cover_short',
-                            'shares': self.borrowed_shares,
-                            'price': share_price,
-                            'capital': self.capital,
-                            'profit': short_sell_profit,
-                            'flag': False
-                        })
-                        self.borrowed_shares = 0
-                        self.flag = False  # Turn off flag after covering short
+                    self.cover_short(transactions, share_price)
                 else:
-                    # Hold condition during short sell
-                    transactions.append({
-                        'action': 'hold',
-                        'shares': self.position,
-                        'price': share_price,
-                        'capital': self.capital,
-                        'position': self.position,
-                        'flag': self.flag
-                    })
-                continue  
+                    self.hold(transactions, share_price)
+                continue
 
             if signal == 1 and self.capital > share_price + self.transaction_fee:
-                # Buy shares if the signal is 1 and there is enough capital
-                number_of_shares = (self.capital - self.transaction_fee) // share_price
-                self.position += number_of_shares
-                self.capital -= number_of_shares * share_price + self.transaction_fee
-                self.buy_prices += number_of_shares * share_price
-
-                transactions.append({
-                    'action': 'buy',
-                    'shares': number_of_shares,
-                    'price': share_price,
-                    'capital': self.capital,
-                    'position': self.position
-                })
-
+                self.buy(transactions, share_price)
             elif signal == -1 and self.position > 0:
-                # Sell position if there's profit
-                total_sell_price = self.position * share_price
-                profit = total_sell_price - (self.buy_prices + self.transaction_fee)
-                if profit > 0:
-                    self.capital += total_sell_price - self.transaction_fee
-                    transactions.append({
-                        'action': 'sell',
-                        'shares': self.position,
-                        'price': share_price,
-                        'capital': self.capital,
-                        'profit': profit,
-                        'position': 0
-                    })
-                    self.position = 0  # Reset position after selling
-                    self.buy_prices = 0
-
-            elif signal == -1 and self.position == 0 and not self.flag:
-                # Short selling scenario
-                self.flag = True
-                self.borrowed_shares = 10
-                self.borrowed_shares_liquidation = self.borrowed_shares * share_price
-                self.capital -= self.transaction_fee  # Deduct transaction fee for short sell
-                transactions.append({
-                    'action': 'short_sell',
-                    'shares': self.borrowed_shares,
-                    'price': share_price,
-                    'capital': self.capital,
-                    'flag': self.flag
-                })
-
+                self.sell(transactions, share_price)
+            elif signal == -1 and self.position == 0 and not self.in_short_position:
+                self.short_sell(transactions, share_price)
             else:
-                # Hold condition
-                transactions.append({
-                    'action': 'hold',
-                    'shares': self.position,
-                    'price': share_price,
-                    'capital': self.capital,
-                    'position': self.position,
-                    'flag': self.flag
-                })
+                self.hold(transactions, share_price)
 
         return transactions
-    

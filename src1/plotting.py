@@ -64,3 +64,78 @@ def plot_transactions(df):
 
     # Show the plot
     fig.show()
+
+
+
+
+
+
+
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def plot_portfolio_values(portfolio_values):
+    plt.figure(figsize=(10, 6))
+    plt.plot(portfolio_values, label='Portfolio Value', color='blue', linestyle='-', linewidth=2)
+    plt.xlabel('Time')
+    plt.ylabel('Portfolio Value')
+    plt.title('Portfolio Value Over Time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def plot_drawdown(drawdown):
+    plt.figure(figsize=(10, 6))
+    plt.plot(drawdown, label='Drawdown', color='red', linestyle='-', linewidth=2)
+    plt.xlabel('Time')
+    plt.ylabel('Drawdown')
+    plt.title('Drawdown Over Time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def plot_drawdown_vs_stock_price(df, drawdown):
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    color = 'tab:blue'
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Stock Price', color=color)
+    ax1.plot(df.index, df['share_price'], color=color, label='Stock Price')
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    color = 'tab:red'
+    ax2.set_ylabel('Drawdown', color=color)  # we already handled the x-label with ax1
+    ax2.plot(df.index, drawdown, color=color, label='Drawdown')
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    plt.title('Drawdown and Stock Price Over Time')
+    fig.legend(loc='upper left', bbox_to_anchor=(0.1,0.9))
+    plt.grid(True)
+    plt.show()
+
+
+
+
+def plot_portfolio_values_and_drawdown(portfolio_values, drawdown):
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    color = 'tab:blue'
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Portfolio Value', color=color)
+    ax1.plot(portfolio_values, label='Portfolio Value', color=color, linestyle='-', linewidth=2)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    color = 'tab:red'
+    ax2.set_ylabel('Drawdown', color=color)  # we already handled the x-label with ax1
+    ax2.plot(drawdown, label='Drawdown', color=color, linestyle='-', linewidth=2)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    plt.title('Portfolio Value and Drawdown Over Time')
+    fig.legend(loc='upper left', bbox_to_anchor=(0.1,0.9))
+    plt.grid(True)
+    plt.show()

@@ -5,6 +5,7 @@ class strategy_v0:
 
     def execute(self, signals):
         transactions = []
+        portfolio_values = []
 
         for index, signal_data in signals.iterrows():
             self.signal = signal_data['signal']
@@ -29,4 +30,10 @@ class strategy_v0:
                 case _:
                     trade_manager.hold(transactions, self.share_price)
 
-        return transactions
+
+            # calculating protfolio value
+            latest_known_value = self.share_price
+            portfolio_value = trade_manager.capital + (trade_manager.position * latest_known_value)
+            portfolio_values.append(portfolio_value)
+
+        return transactions, portfolio_values

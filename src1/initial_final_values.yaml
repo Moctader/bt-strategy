@@ -1,8 +1,8 @@
 final_values:
-  capital: 1.0315499999560416
-  final_liquid: 100411.31808999996
-  position: 87422.0
-  share_price: 1.14857
+  capital: 103125.74230000004
+  final_liquid: 103125.74230000004
+  position: 0.0
+  share_price: 1.14539
 initial_values:
   capital: 100000
   position: 0

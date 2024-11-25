@@ -78,6 +78,7 @@ class ProfitAndLoss:
                 self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, in_short_position=in_short_position)
 
         return pnl_data
+    
 
     def save_to_yaml(self, filename='initial_final_values.yaml'):
         data = {

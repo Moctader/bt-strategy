@@ -14,13 +14,19 @@ def main():
     strategy = strategy_v0()
     profit_and_loss = ProfitAndLoss()
 
+
+
     signals = signal_generator.generate_signals(data)
+    print(signals)
     strategy_df, portfolio_values = strategy.execute(pd.DataFrame(signals))
     results = profit_and_loss.calculate(pd.DataFrame(strategy_df))
     df = pd.DataFrame(results)
 
+
     # Align the index with the timestamp from the original data
     df.index = pd.to_datetime(data['timestamp'].iloc[:len(df)])
+
+
 
     # Calculate drawdown
     portfolio_series = pd.Series(portfolio_values)
@@ -28,38 +34,22 @@ def main():
     drawdown = (portfolio_series - cumulative_max) / cumulative_max
 
 
-    # Calculate returns based on portfolio values
-    returns = portfolio_series.pct_change().dropna()
     # Calculate Sharpe ratio
+    returns = portfolio_series.pct_change().dropna()
     risk_free_rate = 0.0 
     average_return = returns.mean()
     return_std = returns.std()
     sharpe_ratio = (average_return - risk_free_rate) / return_std
-
     print(f'Sharpe Ratio: {sharpe_ratio}')
-
-    # Calculate returns based on share price data
-    # price_data = df['share_price']
-    # returns = ffn.to_returns(price_data).dropna()
-
-    # Use the 'ffn' library to calculate performance metrics
-    # perf = returns.calc_stats()
-
-    # # Display a summary of the performance metrics
-    # print(perf.display())
-    
-    profit_and_loss.save_to_yaml()
 
 
 
     # Plot portfolio values
     plot_transactions(df)
-    plot_portfolio_values(portfolio_values)
-    plot_drawdown(drawdown)
-    plot_portfolio_values_and_drawdown(portfolio_values, drawdown)
+    #plot_portfolio_values_and_drawdown(portfolio_values, drawdown)
 
-    # Plot drawdown against stock price
-    # plot_drawdown_vs_stock_price(df, drawdown)
+    profit_and_loss.save_to_yaml()
+
 
 if __name__ == "__main__":
     main()

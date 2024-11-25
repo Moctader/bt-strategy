@@ -10,11 +10,16 @@ class strategy_v0:
         for index, signal_data in signals.iterrows():
             self.signal = signal_data['signal']
             self.share_price = signal_data['close']
-            self.next_share_price = signals['close'].shift(-1).iloc[index]
+            
+            # Calculate previous share price if index is greater than 0
+            if index > 0:
+                self.previous_share_price = signals['close'].iloc[index - 1]
+            else:
+                self.previous_share_price = None
 
-            # If in short sell position, wait until next_share_price > share_price to cover short
+            # If in short sell position, wait until previous_share_price > share_price to cover short
             if trade_manager.in_short_position:
-                if self.next_share_price > self.share_price:
+                if self.previous_share_price is not None and self.previous_share_price > self.share_price:
                     trade_manager.cover_short(transactions, self.share_price)
                 else:
                     trade_manager.hold(transactions, self.share_price)
@@ -27,13 +32,17 @@ class strategy_v0:
                     trade_manager.sell(transactions, self.share_price)
                 case -1 if trade_manager.position == 0 and not trade_manager.in_short_position:
                     trade_manager.short_sell(transactions, self.share_price)
+                case 2:
+                    trade_manager.exit(transactions, self.share_price)
+                case 3:
+                    trade_manager.adjust(transactions, self.share_price)
+                case 4:
+                    trade_manager.hold(transactions, self.share_price)
                 case _:
                     trade_manager.hold(transactions, self.share_price)
 
-
-            # calculating protfolio value
-            latest_known_value = self.share_price
-            portfolio_value = trade_manager.capital + (trade_manager.position * latest_known_value)
+            # Calculate portfolio value
+            portfolio_value = trade_manager.capital + (trade_manager.position * self.share_price)
             portfolio_values.append(portfolio_value)
 
         return transactions, portfolio_values

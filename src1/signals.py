@@ -5,17 +5,16 @@ class SignalGenerator:
     def generate_signals(self, data):
         df = data.copy()
 
-        # Generate signals based on current and next close price
+        # Generate signals based on previous and current close price
         df['signal'] = 0.0
-        for i in range(len(df) - 1):
+        for i in range(1, len(df)):
+            previous_close = df['close'].iloc[i - 1]
             current_close = df['close'].iloc[i]
-            next_close = df['close'].iloc[i + 1]
 
-            if current_close < next_close:
+            if current_close > previous_close:
                 df.at[i, 'signal'] = 1
-            elif current_close > next_close:
+            elif current_close < previous_close:
                 df.at[i, 'signal'] = -1
             else:
                 df.at[i, 'signal'] = 0
-
         return df

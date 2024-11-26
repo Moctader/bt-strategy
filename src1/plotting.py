@@ -6,6 +6,8 @@ def plot_transactions(df):
     sell_signals = df[df['action'] == 'sell']
     short_sell_signals = df[df['action'] == 'short_sell']
     cover_short_signals = df[df['action'] == 'cover_short']
+    hold_signals = df[df['action'] == 'hold']
+
 
     # Create figure with secondary y-axis
     fig = make_subplots(rows=2, cols=1, 
@@ -43,6 +45,13 @@ def plot_transactions(df):
         go.Scatter(x=cover_short_signals.index, y=cover_short_signals['share_price'], mode='markers', name='Cover Short', marker=dict(symbol='circle', color='purple', size=10)),
         row=1, col=1
     )
+
+        # Add hold signals
+    fig.add_trace(
+        go.Scatter(x=hold_signals.index, y=hold_signals['share_price'], mode='markers', name='Hold', marker=dict(symbol='circle', color='blue', size=10)),
+        row=1, col=1
+    )
+
 
     # Add Cumulative PnL
     fig.add_trace(

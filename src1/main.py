@@ -7,7 +7,7 @@ from profit_and_loss import ProfitAndLoss
 from plotting import plot_portfolio_values, plot_drawdown, plot_drawdown_vs_stock_price, plot_portfolio_values_and_drawdown
 
 def main():
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(7000)
+    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10000)
 
     # Initialize key components
     signal_generator = SignalGenerator()
@@ -38,15 +38,13 @@ def main():
 
     print(f'Sharpe Ratio: {sharpe_ratio}')
 
-    # Calculate returns based on share price data
-    # price_data = df['share_price']
-    # returns = ffn.to_returns(price_data).dropna()
+    price_data = df['share_price']
+    returns = ffn.to_returns(price_data).dropna()
 
-    # Use the 'ffn' library to calculate performance metrics
-    # perf = returns.calc_stats()
+    perf = returns.calc_stats()
 
-    # # Display a summary of the performance metrics
-    # print(perf.display())
+    # Display a summary of the performance metrics
+    print(perf.display())
     
     profit_and_loss.save_to_yaml()
 
@@ -54,9 +52,9 @@ def main():
 
     # Plot portfolio values
     plot_transactions(df)
-    plot_portfolio_values(portfolio_values)
-    plot_drawdown(drawdown)
-    plot_portfolio_values_and_drawdown(portfolio_values, drawdown)
+    # plot_portfolio_values(portfolio_values)
+    # plot_drawdown(drawdown)
+    # plot_portfolio_values_and_drawdown(portfolio_values, drawdown)
 
     # Plot drawdown against stock price
     # plot_drawdown_vs_stock_price(df, drawdown)

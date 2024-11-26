@@ -4,10 +4,10 @@ from strategy import TradingStrategy
 from performance_metrics import CAGR, sharpe_ratio, max_drawdown
 
 # Load data
-df = pd.read_csv('../src1/data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100000)
+df = pd.read_csv('../data/data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100000)
 df.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
 df['Date'] = pd.to_datetime(df['Date'])  # Convert 'Date' column to datetime format
-df.set_index('Date', inplace=True)  # Set 'Date' column as the index
+df.set_index('Date', inplace=True)  
 
 # Initialize the GenerateSignal class with the data
 signal_generator = GenerateSignal(df, wick_size=0.2, atr_period=20, slippage=0.1, size=1)

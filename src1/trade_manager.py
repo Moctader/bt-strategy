@@ -43,6 +43,8 @@ class TradeManager:
             self.capital += total_sell_price - self.transaction_fee
             self.add_transaction(transactions, 'sell', self.position, share_price, profit)
             self.position = 0
+            self.buy_prices = 0
+
             
 
     # Short sell shares based on the available capital and transaction fee 

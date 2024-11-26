@@ -52,12 +52,6 @@ def main():
 
     # Plot portfolio values
     plot_transactions(df)
-    # plot_portfolio_values(portfolio_values)
-    # plot_drawdown(drawdown)
-    # plot_portfolio_values_and_drawdown(portfolio_values, drawdown)
-
-    # Plot drawdown against stock price
-    # plot_drawdown_vs_stock_price(df, drawdown)
 
 if __name__ == "__main__":
     main()

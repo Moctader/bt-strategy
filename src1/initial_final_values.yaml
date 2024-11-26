@@ -1,7 +1,6 @@
 final_values:
-  capital: 90881.48447999977
-  final_liquid: 181764.66217999975
-  position: 78854.0
+  capital: 105943.86340000002
+  cumulative_pnl: -5943.863400000019
   share_price: 1.15255
 initial_values:
   capital: 100000

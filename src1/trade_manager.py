@@ -35,7 +35,7 @@ class TradeManager:
         profit = total_sell_price - (self.buy_prices + self.transaction_fee)
         self.capital += total_sell_price - self.transaction_fee
         self.add_transaction(transactions, 'sell', self.position, share_price, timestamp, profit)
-        self.position = 0  # Reset position after selling
+        self.position = 0  
         self.buy_prices = 0
 
     # Hold the current position without any transaction 

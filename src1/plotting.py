@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
 
 def plot_transactions(df):
     buy_signals = df[df['action'] == 'buy']
@@ -78,11 +79,6 @@ def plot_transactions(df):
 
 
 
-
-
-
-import matplotlib.pyplot as plt
-import pandas as pd
 
 def plot_portfolio_values(portfolio_values):
     plt.figure(figsize=(10, 6))

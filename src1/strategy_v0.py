@@ -8,7 +8,6 @@ class strategy_v0:
 
     def execute(self, signals):
         transactions = []  
-        portfolio_values = []  
 
         for index, signal_data in signals.iterrows():
             self.signal = signal_data['signal']  

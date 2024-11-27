@@ -1,7 +1,6 @@
 import pandas as pd
 
 def calculate_performance_metrics(df):
-    # Convert timestamp to datetime and set it as the index
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df.set_index('timestamp', inplace=True)
 
@@ -13,17 +12,28 @@ def calculate_performance_metrics(df):
     average_return = df['returns'].mean()
     return_std = df['returns'].std()
 
-    # Handle cases where return_std is zero to avoid division by zero
-    if return_std == 0:
-        sharpe_ratio = float('nan')
-    else:
-        sharpe_ratio = (average_return - risk_free_rate) / return_std
-
-    print(f'Sharpe Ratio: {sharpe_ratio}')
+    # Annualize the Sharpe ratio for minute-based data
+    minutes_per_year = 525600  
+    sharpe_ratio = (average_return - risk_free_rate) / return_std * (minutes_per_year ** 0.5)
 
     # Calculate drawdown
     cumulative_max = df['capital'].cummax()
     df['drawdown'] = (df['capital'] - cumulative_max) / cumulative_max
+    max_drawdown = df['drawdown'].min()
 
-    # Display metrics
+    # Calculate CAGR
+    start_value = df['capital'].iloc[0]
+    end_value = df['capital'].iloc[-1]
+    num_years = (df.index[-1] - df.index[0]).total_seconds() / (365.25 * 24 * 60 * 60)
+    cagr = ((end_value / start_value) ** (1 / num_years) - 1) * 100
+
     print(df)
+    # # Print strategy performance
+    # print('***** STRATEGY PERFORMANCE *****')
+    # print('--------------------------------')
+    # print(f'CAGR: {cagr:.2f} %')
+    # print(f'Sharpe ratio: {sharpe_ratio:.2f}')
+    # print(f'Maximum drawdown: {max_drawdown:.2f} %')
+    # print('--------------------------------')
+
+   

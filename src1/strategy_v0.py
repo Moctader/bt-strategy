@@ -25,11 +25,8 @@ class strategy_v0:
                     self.trade_manager.sell(transactions, self.share_price, self.timestamp)
 
                 # Hold signal: Hold the current position without any transaction
-                case 3:
+                case 0:
                     self.trade_manager.hold(transactions, self.share_price, self.timestamp)
+ 
 
-            # Calculate portfolio value
-            portfolio_value = self.trade_manager.capital + (self.trade_manager.position * self.share_price)
-            portfolio_values.append((self.timestamp, portfolio_value))  
-
-        return transactions, portfolio_values  
+        return transactions  

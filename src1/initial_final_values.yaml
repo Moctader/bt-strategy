@@ -1,6 +1,6 @@
 final_values:
-  capital: 105943.86340000002
-  cumulative_pnl: -5943.863400000019
+  cumulative_pnl: -5274.129650000497
+  final_capital: 100000
   share_price: 1.15255
 initial_values:
   capital: 100000

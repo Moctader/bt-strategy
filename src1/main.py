@@ -22,7 +22,7 @@ def main():
     results = forcaster.generate_forecasts(pd.DataFrame(results))
 
     #calculate_performance_metrics(pd.DataFrame(results))    
-    #plot_transactions(pd.DataFrame(results))    
+    plot_transactions(pd.DataFrame(results))    
     result=pd.DataFrame(results).set_index('timestamp')
     result.rename(columns={'action': 'signal', 'share_price':'price'}, inplace=True)
 

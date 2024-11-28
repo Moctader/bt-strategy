@@ -14,7 +14,7 @@ class ProfitAndLoss:
             'share_price': price,
             'capital': capital,
             'position': position,
-            'point_pnl': point_pnl,
+            'pnl': point_pnl,
             'cumulative_pnl': cumulative_pnl,
             'timestamp': timestamp,
             'profit': profit

@@ -27,5 +27,4 @@ class strategy_v0:
                 case 0:
                     self.trade_manager.hold(transactions, self.share_price, self.timestamp)
  
-
         return transactions  

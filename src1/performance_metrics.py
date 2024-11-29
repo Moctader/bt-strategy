@@ -2,6 +2,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+
+
+def ddown(df):
+    previous_preak=df['cumulative_return'].cummax()
+    df['d']=(df['cumulative_return']-previous_preak)/previous_preak
+    
+    plt.plot(df.index, df['d'])
+    plt.show()
+    return 
+
 def calculate_performance_metrics(df):
     # Calculate portfolio value
     df['portfolio_value'] = df['capital'] + (df['position'] * df['price'])
@@ -9,14 +20,12 @@ def calculate_performance_metrics(df):
     # Calculate cumulative return
     df['cumulative_return'] = (df['portfolio_value'] / df['portfolio_value'].iloc[0]) - 1
     
+    ddown(df)
     # Calculate cumulative max and drawdown
     cumulative_return = df['cumulative_return']
     cumulative_max = cumulative_return.cummax()
     drawdown = (cumulative_return - cumulative_max) / cumulative_max
-    df['drawdown'] = drawdown
-
-
-
+    df['drawdown'] = drawdown   
 
 
 
@@ -30,6 +39,7 @@ def calculate_performance_metrics(df):
     peak_value = df['portfolio_value'].max()
     trough_value = df['portfolio_value'].min()
     drawdown_value = (trough_value - peak_value) / peak_value * 100
+
 
     # Print maximum drawdown
     print(f'Maximum Drawdown: {drawdown_value:.2f}%')

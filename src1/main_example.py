@@ -4,6 +4,7 @@ from strategy_v0 import strategy_v0
 from plotting import plot_transactions
 from profit_and_loss import ProfitAndLoss
 from forcaster import Forecaster 
+from performance_metrics import calculate_performance_metrics
 
 def run_strategy():
 
@@ -30,7 +31,7 @@ def run_strategy():
     #results=pd.DataFrame(results)   
 
     # Plot transactions
-    plot_transactions(pd.DataFrame(results))   
+    #plot_transactions(pd.DataFrame(results))   
 
     # Save results to CSV
     results = pd.DataFrame(results).set_index('timestamp')
@@ -41,4 +42,5 @@ def run_strategy():
 # Run the simulation
 if __name__ == "__main__":
     results = run_strategy()
+    calculate_performance_metrics(results)
     print(results)

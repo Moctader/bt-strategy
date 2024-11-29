@@ -32,9 +32,9 @@ class TradeManager:
         total_sell_price = self.position * share_price
         profit = total_sell_price - (self.buy_prices + self.transaction_fee)
         self.capital += total_sell_price - self.transaction_fee
-        self.add_transaction(transactions, 'sell', self.position, share_price, timestamp, profit)
         self.position = 0  
         self.buy_prices = 0
+        self.add_transaction(transactions, 'sell', self.position, share_price, timestamp, profit)
 
     # Hold the current position without any transaction 
     def hold(self, transactions, share_price, timestamp):

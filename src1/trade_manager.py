@@ -4,9 +4,7 @@ class TradeManager:
         self.transaction_fee = 2
         self.position = 0
         self.shares = 0
-        self.borrowed_shares = 0
         self.buy_prices = 0
-        self.borrowed_shares_liquidation = 0
 
     # Add transaction data to the transactions list
     def add_transaction(self, transactions, action, shares, price, timestamp, profit=0):
@@ -25,7 +23,7 @@ class TradeManager:
     def buy(self, transactions, share_price, timestamp):
         number_of_shares = (self.capital - self.transaction_fee) // share_price
         self.position += number_of_shares
-        self.capital -= number_of_shares * share_price + self.transaction_fee
+        self.capital -= number_of_shares * share_price 
         self.buy_prices += number_of_shares * share_price
         self.add_transaction(transactions, 'buy', number_of_shares, share_price, timestamp)
 

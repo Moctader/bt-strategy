@@ -1,10 +1,8 @@
 from trade_manager import TradeManager
 
 class strategy_v0:
-    def __init__(self, stop_loss_threshold=0.05, take_profit_threshold=0.1):
+    def __init__(self):
         self.trade_manager = TradeManager()  
-        self.stop_loss_threshold = stop_loss_threshold  
-        self.take_profit_threshold = take_profit_threshold  
 
     def execute(self, signals):
         transactions = []  
@@ -14,6 +12,8 @@ class strategy_v0:
             self.share_price = signal_data['close']  
             self.previous_share_price = signals['close'].iloc[index - 1] if index > 0 else self.share_price  
             self.timestamp= signal_data['timestamp']
+            #self.close_price = signal_data['close'] 
+            
             match self.signal:
                 # Buy signal: Buy if there is enough capital to cover the share price and transaction fee
                 case 1 if self.trade_manager.capital > self.share_price + self.trade_manager.transaction_fee:

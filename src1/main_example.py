@@ -6,7 +6,7 @@ from profit_and_loss import ProfitAndLoss
 from forcaster import Forecaster 
 
 def run_strategy():
-    # Load data
+
     data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10000)
 
     # Initialize key components
@@ -27,16 +27,18 @@ def run_strategy():
 
     # Calculate PnL
     results = profit_and_loss.calculate(pd.DataFrame(strategy_data))
-    results=pd.DataFrame(results)   
+    #results=pd.DataFrame(results)   
+
+    # Plot transactions
+    plot_transactions(pd.DataFrame(results))   
 
     # Save results to CSV
-    plot_transactions(pd.DataFrame(results))    
-    result = pd.DataFrame(results).set_index('timestamp')
-    print(result)
-    result.to_csv('example_results.csv', index=True)
-
+    results = pd.DataFrame(results).set_index('timestamp')
+    results.to_csv('results/example_results.csv', index=True)
+  
     return results
 
 # Run the simulation
 if __name__ == "__main__":
     results = run_strategy()
+    print(results)

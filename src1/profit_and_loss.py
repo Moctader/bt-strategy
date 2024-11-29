@@ -9,15 +9,13 @@ class ProfitAndLoss:
 
     def add_pnl_data(self, pnl_data, action, shares, price, capital, position, point_pnl, cumulative_pnl, timestamp, profit=0):
         pnl_data.append({
-            'action': action,
-            'shares': shares,
-            'share_price': price,
+            'signal': action,
+            'price': price,
             'capital': capital,
             'position': position,
             'pnl': point_pnl,
             'cumulative_pnl': cumulative_pnl,
             'timestamp': timestamp,
-            'profit': profit
         })
 
     def calculate(self, transactions):

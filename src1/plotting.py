@@ -3,11 +3,9 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 
 def plot_transactions(df):
-    buy_signals = df[df['action'] == 'buy']
-    sell_signals = df[df['action'] == 'sell']
-    short_sell_signals = df[df['action'] == 'short_sell']
-    cover_short_signals = df[df['action'] == 'cover_short']
-    hold_signals = df[df['action'] == 'hold']
+    buy_signals = df[df['signal'] == 'buy']
+    sell_signals = df[df['signal'] == 'sell']
+    hold_signals = df[df['signal'] == 'hold']
 
 
     # Create figure with secondary y-axis
@@ -19,37 +17,27 @@ def plot_transactions(df):
 
     # Add price line
     fig.add_trace(
-        go.Scatter(x=df.index, y=df['share_price'], mode='lines', name='Price', line=dict(color='blue')),
+        go.Scatter(x=df.index, y=df['price'], mode='lines', name='Price', line=dict(color='blue')),
         row=1, col=1
     )
 
     # Add buy signals
     fig.add_trace(
-        go.Scatter(x=buy_signals.index, y=buy_signals['share_price'], mode='markers', name='Buy', marker=dict(symbol='triangle-up', color='green', size=10)),
+        go.Scatter(x=buy_signals.index, y=buy_signals['price'], mode='markers', name='Buy', marker=dict(symbol='triangle-up', color='green', size=10)),
         row=1, col=1
     )
 
     # Add sell signals
     fig.add_trace(
-        go.Scatter(x=sell_signals.index, y=sell_signals['share_price'], mode='markers', name='Sell', marker=dict(symbol='triangle-down', color='red', size=10)),
+        go.Scatter(x=sell_signals.index, y=sell_signals['price'], mode='markers', name='Sell', marker=dict(symbol='triangle-down', color='red', size=10)),
         row=1, col=1
     )
 
-    # Add short sell signals
-    fig.add_trace(
-        go.Scatter(x=short_sell_signals.index, y=short_sell_signals['share_price'], mode='markers', name='Short Sell', marker=dict(symbol='x', color='orange', size=10)),
-        row=1, col=1
-    )
-
-    # Add cover short signals
-    fig.add_trace(
-        go.Scatter(x=cover_short_signals.index, y=cover_short_signals['share_price'], mode='markers', name='Cover Short', marker=dict(symbol='circle', color='purple', size=10)),
-        row=1, col=1
-    )
+ 
 
         # Add hold signals
     fig.add_trace(
-        go.Scatter(x=hold_signals.index, y=hold_signals['share_price'], mode='markers', name='Hold', marker=dict(symbol='circle', color='blue', size=10)),
+        go.Scatter(x=hold_signals.index, y=hold_signals['price'], mode='markers', name='Hold', marker=dict(symbol='circle', color='blue', size=10)),
         row=1, col=1
     )
 
@@ -74,6 +62,12 @@ def plot_transactions(df):
 
     # Show the plot
     fig.show()
+
+
+
+
+
+
 
 
 
@@ -106,7 +100,7 @@ def plot_drawdown_vs_stock_price(df, drawdown):
     color = 'tab:blue'
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Stock Price', color=color)
-    ax1.plot(df.index, df['share_price'], color=color, label='Stock Price')
+    ax1.plot(df.index, df['price'], color=color, label='Stock Price')
     ax1.tick_params(axis='y', labelcolor=color)
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis

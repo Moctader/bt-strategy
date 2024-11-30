@@ -8,7 +8,7 @@ from performance_metrics import calculate_performance_metrics
 
 def run_strategy():
 
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(1000)
+    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10000)
 
     # Initialize key components
     forecaster = Forecaster()
@@ -21,7 +21,7 @@ def run_strategy():
     data_with_forecasts = forecaster.generate_forecasts(data)
 
     # Generate signals
-    signals = signal_generator.generate_signals(data_with_forecasts, column_name='forecast')
+    signals = signal_generator.generate_signals(data_with_forecasts, column_name='close')
 
     # Execute strategy
     strategy_data = strategy.execute(pd.DataFrame(signals))
@@ -31,7 +31,7 @@ def run_strategy():
     #results=pd.DataFrame(results)   
 
     # Plot transactions
-    plot_transactions(pd.DataFrame(results))   
+    #plot_transactions(pd.DataFrame(results))   
 
     # Save results to CSV
     results = pd.DataFrame(results).set_index('timestamp')
@@ -42,5 +42,5 @@ def run_strategy():
 # Run the simulation
 if __name__ == "__main__":
     results = run_strategy()
-    #calculate_performance_metrics(results)
+    calculate_performance_metrics(results)
     print(results)

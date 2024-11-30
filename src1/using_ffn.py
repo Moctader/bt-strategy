@@ -13,6 +13,7 @@ prices.set_index('timestamp', inplace=True)
 # Calculate statistics using ffn
 stats = prices.calc_stats()
 stats.display()
+drawdown = stats.prices.to_drawdown_series()
 
 # Create a figure with two subplots
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
@@ -26,7 +27,6 @@ ax1.grid(True)
 ax1.legend()
 
 # Plot the drawdown
-drawdown = stats.prices.to_drawdown_series()
 ax2.plot(drawdown.index, drawdown, label='Drawdown', color='red')
 ax2.set_title('Drawdown Over Time')
 ax2.set_xlabel('Time')

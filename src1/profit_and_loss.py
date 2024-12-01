@@ -20,10 +20,8 @@ class ProfitAndLoss:
 
     def calculate(self, transactions):
         pnl_data = []
-
         for index, transaction in transactions.iterrows():
             point_pnl = 0  
-
             action = transaction['action']
             shares = transaction['shares']
             price = transaction['share_price']
@@ -33,20 +31,25 @@ class ProfitAndLoss:
             timestamp = transaction['timestamp']
 
             profit = float(profit)
-
             match action:
-                case 'buy':
+                case 'buy_long_position':
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
 
-                case 'sell':
+                case 'sell_long_position':
+                    point_pnl = profit  
+                    self.cumulative_pnl += point_pnl  
+                    self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp, profit)
+
+                case 'short_position_sell':
+                    self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
+
+                case 'buy_back':
                     point_pnl = profit  
                     self.cumulative_pnl += point_pnl  
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp, profit)
 
                 case 'hold':
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
-
-   
 
         return pnl_data
 

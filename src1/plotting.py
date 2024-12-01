@@ -3,10 +3,11 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 
 def plot_transactions(df):
-    buy_signals = df[df['signal'] == 'buy']
-    sell_signals = df[df['signal'] == 'sell']
+    buy_signals = df[df['signal'] == 'buy_long_position']
+    sell_signals = df[df['signal'] == 'sell_long_position']
+    short_signals = df[df['signal'] == 'short_position_sell']
+    buy_back_signals = df[df['signal'] == 'buy_back']
     hold_signals = df[df['signal'] == 'hold']
-
 
     # Create figure with secondary y-axis
     fig = make_subplots(rows=2, cols=1, 
@@ -17,34 +18,43 @@ def plot_transactions(df):
 
     # Add price line
     fig.add_trace(
-        go.Scatter(x=df.index, y=df['price'], mode='lines', name='Price', line=dict(color='blue')),
+        go.Scatter(x=df['timestamp'], y=df['price'], mode='lines', name='Price', line=dict(color='blue')),
         row=1, col=1
     )
 
     # Add buy signals
     fig.add_trace(
-        go.Scatter(x=buy_signals.index, y=buy_signals['price'], mode='markers', name='Buy', marker=dict(symbol='triangle-up', color='green', size=10)),
+        go.Scatter(x=buy_signals['timestamp'], y=buy_signals['price'], mode='markers', name='Buy', marker=dict(symbol='triangle-up', color='green', size=10)),
         row=1, col=1
     )
 
     # Add sell signals
     fig.add_trace(
-        go.Scatter(x=sell_signals.index, y=sell_signals['price'], mode='markers', name='Sell', marker=dict(symbol='triangle-down', color='red', size=10)),
+        go.Scatter(x=sell_signals['timestamp'], y=sell_signals['price'], mode='markers', name='Sell', marker=dict(symbol='triangle-down', color='red', size=10)),
         row=1, col=1
     )
 
- 
-
-        # Add hold signals
+    # Add short signals
     fig.add_trace(
-        go.Scatter(x=hold_signals.index, y=hold_signals['price'], mode='markers', name='Hold', marker=dict(symbol='circle', color='blue', size=10)),
+        go.Scatter(x=short_signals['timestamp'], y=short_signals['price'], mode='markers', name='Short', marker=dict(symbol='triangle-left', color='orange', size=10)),
         row=1, col=1
     )
 
+    # Add buy back signals
+    fig.add_trace(
+        go.Scatter(x=buy_back_signals['timestamp'], y=buy_back_signals['price'], mode='markers', name='Buy Back', marker=dict(symbol='triangle-right', color='purple', size=10)),
+        row=1, col=1
+    )
+
+    # Add hold signals
+    fig.add_trace(
+        go.Scatter(x=hold_signals['timestamp'], y=hold_signals['price'], mode='markers', name='Hold', marker=dict(symbol='circle', color='blue', size=10)),
+        row=1, col=1
+    )
 
     # Add Cumulative PnL
     fig.add_trace(
-        go.Scatter(x=df.index, y=df['cumulative_pnl'], mode='lines', name='Cumulative PnL', line=dict(color='purple')),
+        go.Scatter(x=df['timestamp'], y=df['cumulative_pnl'], mode='lines', name='Cumulative PnL', line=dict(color='purple')),
         row=2, col=1
     )
 

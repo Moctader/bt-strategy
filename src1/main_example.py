@@ -8,7 +8,7 @@ from performance_metrics import calculate_performance_metrics
 
 def run_strategy():
 
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10000)
+    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100)
 
     # Initialize key components
     forecaster = Forecaster()
@@ -25,13 +25,16 @@ def run_strategy():
 
     # Execute strategy
     strategy_data = strategy.execute(pd.DataFrame(signals))
+    #print(pd.DataFrame(strategy_data))
 
     # Calculate PnL
     results = profit_and_loss.calculate(pd.DataFrame(strategy_data))
-    #results=pd.DataFrame(results)   
+    results=pd.DataFrame(results)   
+    #print(results)
+
 
     # Plot transactions
-    #plot_transactions(pd.DataFrame(results))   
+    plot_transactions(pd.DataFrame(results))   
 
     # Save results to CSV
     results = pd.DataFrame(results).set_index('timestamp')

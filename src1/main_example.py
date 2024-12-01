@@ -8,7 +8,7 @@ from performance_metrics import calculate_performance_metrics
 
 def run_strategy():
 
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100)
+    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(10000)
 
     # Initialize key components
     forecaster = Forecaster()

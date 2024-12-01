@@ -1,7 +1,7 @@
 class TradeManager:
     def __init__(self):
         self.capital = 100000  # Initial capital
-        self.transaction_fee = 2  # Transaction fee per trade
+        self.transaction_fee = 6  # Transaction fee per trade
         self.position = 0  # Current position (number of shares)
         self.shares = 0  # Total number of shares in hand (used for long position)
         self.buy_prices = 0  # Total cost of shares purchased for long positions

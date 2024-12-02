@@ -33,11 +33,11 @@ class strategy_v0:
                     self.trade_manager.in_position = 'short'  # Now in a short in_position
                     self.trade_manager.borrow_share_and_sell_immediately(transactions, self.share_price, self.timestamp)
 
-                # 1: Buy Signal (to close the short in_position and take profit/loss)
+                # 1: Sell Signal (to close the short in_position and take profit/loss)
                 case -1 if self.trade_manager.in_position == 'short':
                     # Buy back the borrowed shares to close the short in_position
                     self.trade_manager.buy_back_borrowed_shares(transactions, self.share_price, self.timestamp)
-                    self.trade_manager.in_position = 'long'  # After buying back, we are now in a long in_position
+                    self.trade_manager.in_position = None  
 
                 # Hold signal: Hold the current in_position without any transaction
                 case 0:

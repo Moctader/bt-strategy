@@ -6,13 +6,13 @@ import ffn
 
 def calculate_performance_metrics(df):
     # Calculate portfolio value
-    df['portfolio_value'] = df['capital'] + (df['position'] * df['price'])
+    df['portfolio_value'] = df['capital'] + (df['position'] * df['price']) 
     analyze_portfolio(df)
-    # Step 1: Calculate cumulative max (previous peak)
-    df['Prev_Peak'] = df['portfolio_value'].cummax()
+    # # Step 1: Calculate cumulative max (previous peak)
+    # df['Prev_Peak'] = df['portfolio_value'].cummax()
     
-    # Step 2: Calculate drawdown (percentage decline from previous peak)
-    df['Drawdown'] = (df['portfolio_value'] - df['Prev_Peak']) / df['Prev_Peak']
+    # # Step 2: Calculate drawdown (percentage decline from previous peak)
+    # df['Drawdown'] = (df['portfolio_value'] - df['Prev_Peak']) / df['Prev_Peak']
 
     
     #draw_drawdown_chart(df)
@@ -58,7 +58,9 @@ def analyze_portfolio(df):
     drawdown = stats.prices.to_drawdown_series()
     
     # Plot the portfolio performance and drawdowns
-    stats.plot()
+    # stats.plot()
+    # plt.show()
+
 
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))

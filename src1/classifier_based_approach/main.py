@@ -1,3 +1,8 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from data import generate_dummy_data    
 import pandas as pd
 from signals import SignalGenerator
 from strategy_v0 import strategy_v0
@@ -8,7 +13,6 @@ from performance_metrics import calculate_performance_metrics
 
 def run_strategy():
 
-    data = pd.read_csv('./data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv').head(100)
 
     # Initialize key components
     forecaster = Forecaster()
@@ -16,12 +20,11 @@ def run_strategy():
     strategy = strategy_v0()
     profit_and_loss = ProfitAndLoss()
 
-    # Generate forecasts
-    data['share_price'] = data['close']
-    data_with_forecasts = forecaster.generate_forecasts(data)
+    data=generate_dummy_data()
+
 
     # Generate signals
-    signals = signal_generator.generate_signals(data_with_forecasts, column_name='close')
+    signals = signal_generator.generate_signals(data, column_name='close')
 
     # Execute strategy
     strategy_data = strategy.execute(pd.DataFrame(signals))

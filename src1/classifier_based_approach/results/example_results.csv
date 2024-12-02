@@ -1,0 +1,3 @@
+timestamp,signal,price,capital,position,pnl,cumulative_pnl
+2019-01-02 00:00:00,hold,1.145,100000.0,0.0,0,0
+2019-01-02 00:01:00,buy_long_position,1.146,0.33200000000942964,87258.0,0,0

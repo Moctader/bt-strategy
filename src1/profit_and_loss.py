@@ -27,29 +27,32 @@ class ProfitAndLoss:
             price = transaction['share_price']
             capital = transaction['capital']
             position = transaction['position']
-            profit = transaction.get('profit', 0)
+            profit = transaction['profit']
             timestamp = transaction['timestamp']
 
             profit = float(profit)
             match action:
-                case 'buy_long_position':
+                case 'buy_long_position': 
+                    point_pnl = profit - self.trade_manager.transaction_fee
+                    self.cumulative_pnl += point_pnl
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
 
                 case 'sell_long_position':
-                    point_pnl = profit  
-                    self.cumulative_pnl += point_pnl  
+                    point_pnl = profit 
+                    self.cumulative_pnl += point_pnl 
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp, profit)
 
                 case 'short_position_sell':
+                    point_pnl = profit  - self.trade_manager.transaction_fee
+                    self.cumulative_pnl += point_pnl
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
 
                 case 'buy_back':
-                    point_pnl = profit  
-                    self.cumulative_pnl += point_pnl  
+                    point_pnl = profit 
+                    self.cumulative_pnl += point_pnl
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp, profit)
 
                 case 'hold':
                     self.add_pnl_data(pnl_data, action, shares, price, capital, position, point_pnl, self.cumulative_pnl, timestamp)
 
         return pnl_data
-

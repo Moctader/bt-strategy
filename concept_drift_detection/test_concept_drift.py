@@ -6,7 +6,7 @@ import numpy as np
 # Configuration for DDM
 config = DDMConfig(
     warning_level=0.8,   # Slightly above expected error rates
-    drift_level=1.0,     # Slightly above the warning threshold
+    drift_level=1.1,     # Slightly above the warning threshold
     min_num_instances=10    # Minimum number of samples before detection starts
 )
 detector = DDM(config=config)
@@ -18,7 +18,7 @@ drift_points = []
 warning_points = []
 
 # Generate dummy data
-np.random.seed(42)  # For reproducibility
+np.random.seed(42)  
 n_samples = 1000
 
 # Phase 1: Low error (normal behavior)
@@ -38,7 +38,7 @@ def stream_test(X_test, y_test, metric, detector):
     for i, (X, y) in enumerate(zip(X_test, y_test)):
         error = abs(X - y)  # Calculate absolute error
         metric_error = metric(error_value=error)
-        errors.append(metric_error)  # Store error
+        errors.append(metric_error) 
         
         # Update detector with the current error
         detector.update(value=error)
@@ -47,11 +47,9 @@ def stream_test(X_test, y_test, metric, detector):
         # Check drift and warning status
         if status["drift"]:
             drift_points.append(i)
-            print(f"Concept drift detected at step {i}. Accuracy: {1 - metric_error:.6f}")
         elif status["warning"]:
             warning_points.append(i)
 
-    print(f"Final accuracy: {1 - metric_error:.4f}")
 
 # Run the test
 stream_test(y_pred, y_test, metric, detector)
@@ -72,7 +70,7 @@ plt.subplot(2, 1, 2)
 accuracy = [1 - (sum(errors[:i + 1]) / (i + 1)) for i in range(len(errors))]
 plt.plot(accuracy, label='Accuracy', color='green')
 plt.scatter(drift_points, [accuracy[i] for i in drift_points], color='red', label='Detected Drifts')
-#plt.scatter(warning_points, [accuracy[i] for i in warning_points], color='orange', label='Warning Points')
+plt.scatter(warning_points, [accuracy[i] for i in warning_points], color='orange', label='Warning Points')
 plt.title('Accuracy Over Time')
 plt.xlabel('Sample Index')
 plt.ylabel('Accuracy')

@@ -4,3 +4,4 @@ src/predictions.csv
 src/__pycache__
 src1/data/EODHD_EURUSD_HISTORICAL_2019_2024_1min.csv
 src1/data/__pycache__
+models/results/predictions_vs_actual.csv

@@ -4,9 +4,9 @@ from frouros.metrics import PrequentialError
 import pandas as pd
 
 config = DDMConfig(
-    warning_level=0.000001,
-    drift_level=0.000002,
-    min_num_instances=1 
+    warning_level=1.001,
+    drift_level=1.004,
+    min_num_instances=10 
 )
 detector = DDM(config=config)
 metric = PrequentialError(alpha=1.0)
@@ -32,11 +32,9 @@ def stream_test(y_pred, y_test, metric, detector):
         if status["drift"]:
             drift_points.append(i)
             accuracy = 1 - (cumulative_error / (i + 1))
-            print(f"Concept drift detected at step {i}. Accuracy: {accuracy:.6f}")
         elif status["warning"]:
             warning_points.append(i)
             accuracy = 1 - (cumulative_error / (i + 1))
-            print(f"Warning detected at step {i}. Accuracy: {accuracy:.4f}")
 
     # Final accuracy
     final_accuracy = 1 - (cumulative_error / len(y_pred))
@@ -59,7 +57,6 @@ plt.figure(figsize=(12, 6))
 # Plot error rates
 plt.subplot(2, 1, 1)
 plt.plot(errors, label='Error Rate', color='blue')
-plt.axvline(x=500, color='red', linestyle='--', label='True Drift Point')
 plt.title('Error Rates Over Time')
 plt.xlabel('Sample Index')
 plt.ylabel('Error Rate')
@@ -70,7 +67,6 @@ plt.subplot(2, 1, 2)
 plt.plot(range(len(errors)), [1 - (sum(errors[:i + 1]) / (i + 1)) for i in range(len(errors))], label='Accuracy', color='green')
 plt.scatter(drift_points, [1 - (sum(errors[:i + 1]) / (i + 1)) for i in drift_points], color='red', label='Detected Drifts')
 plt.scatter(warning_points, [1 - (sum(errors[:i + 1]) / (i + 1)) for i in warning_points], color='orange', label='Warning Points')
-plt.axvline(x=500, color='red', linestyle='--', label='True Drift Point')
 plt.title('Accuracy Over Time')
 plt.xlabel('Sample Index')
 plt.ylabel('Accuracy')

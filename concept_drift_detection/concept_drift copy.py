@@ -5,9 +5,9 @@ import pandas as pd
 
 # Adjusted configuration parameters based on observed errors
 config = DDMConfig(
-    warning_level=1.0009,  # Set warning level close to typical error values
-    drift_level=1.0016,    # Set drift level slightly higher than typical error values
-    min_num_instances=10    # Minimum number of instances before checking for concept drift
+    warning_level=1.00060,  # Set warning level close to typical error values
+    drift_level=1.00076,    # Set drift level slightly higher than typical error values
+    min_num_instances=1    # Minimum number of instances before checking for concept drift
 )
 detector = DDM(config=config)
 metric = PrequentialError(alpha=1.0)
@@ -20,7 +20,7 @@ warning_points = []
 def stream_test(X_test, y_test, metric, detector):
     """Simulate data stream over X_test and y_test. Track concept drift and errors."""
     for i, (X, y) in enumerate(zip(X_test, y_test)):
-        error = abs(X - y)  # Simple absolute error
+        error = float(abs(X - y))  # Simple absolute error
         metric_error = metric(error_value=error)  # Update metric
         print(f"Error at step {i}: {metric_error:.6f}")
         

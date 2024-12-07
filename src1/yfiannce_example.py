@@ -1,62 +1,63 @@
 import pandas as pd
-import yfinance as yf
-import ffn
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import ffn
 
-# Function to fetch data in chunks
-def fetch_data_in_chunks(ticker, start_date, end_date, interval, chunk_size):
-    all_data = []
-    current_start = pd.to_datetime(start_date)
-    current_end = current_start + pd.Timedelta(days=chunk_size)
+def calculate_performance_metrics(df):
+    # Calculate portfolio value using 'close' price
+    df['portfolio_value'] = df['capital'] + (df['position'] * df['close'])
+    # Create a DataFrame with the portfolio value series
+    portfolio_values = df[['portfolio_value']]
+    portfolio_values.index = pd.to_datetime(portfolio_values.index)
     
-    while current_start < pd.to_datetime(end_date):
-        if current_end > pd.to_datetime(end_date):
-            current_end = pd.to_datetime(end_date)
-        
-        data = yf.download(ticker, start=current_start.strftime('%Y-%m-%d'), end=current_end.strftime('%Y-%m-%d'), interval=interval)
-        all_data.append(data)
-        
-        current_start = current_end
-        current_end = current_start + pd.Timedelta(days=chunk_size)
+    # Calculate statistics using ffn
+    stats = portfolio_values.calc_stats()
+    stats.display()
     
-    return pd.concat(all_data)
+    # Calculate drawdown series
+    drawdown = stats.prices.to_drawdown_series()
+    analyze_portfolio(portfolio_values, drawdown)
+    return df
 
-# Fetch intraday data using yfinance in chunks
-ticker = 'AAPL'  # Example ticker
-data = fetch_data_in_chunks(ticker, start_date='2020-09-01', end_date='2020-09-02', interval='1m', chunk_size=7)
 
-# Check if data is empty
-if data.empty:
-    raise ValueError("No data fetched. Ensure the date range is within the last 30 days.")
 
-# Use the 'Close' prices
-prices = data[['Close']]
-prices.columns = ['close']
+def analyze_portfolio(portfolio_values, drawdown):
+ 
+    
+    # Plot the portfolio performance and drawdowns
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 
-# Calculate statistics using ffn
-stats = prices.calc_stats()
-stats.display()
+    # Plot the portfolio values
+    ax1.plot(portfolio_values.index, portfolio_values['portfolio_value'], label='Portfolio Value', color='blue')
+    ax1.set_title('Portfolio Value Over Time')
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Portfolio Value')
+    ax1.grid(True)
+    ax1.legend()
 
-# Create a figure with two subplots
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+    # Plot the drawdown
+    ax2.plot(drawdown.index, drawdown, label='Drawdown', color='red')
+    ax2.set_title('Drawdown Over Time')
+    ax2.set_xlabel('Time')
+    ax2.set_ylabel('Drawdown')
+    ax2.grid(True)
+    ax2.legend()
 
-# Plot the prices
-ax1.plot(prices.index, prices['close'], label='Prices', color='blue')
-ax1.set_title('Prices Over Time')
-ax1.set_xlabel('Time')
-ax1.set_ylabel('Price')
-ax1.grid(True)
-ax1.legend()
+    # Adjust layout and show the plot
+    plt.tight_layout()
+    plt.show()
 
-# Plot the drawdown
-drawdown = stats.prices.to_drawdown_series()
-ax2.plot(drawdown.index, drawdown, label='Drawdown', color='red')
-ax2.set_title('Drawdown Over Time')
-ax2.set_xlabel('Time')
-ax2.set_ylabel('Drawdown')
-ax2.grid(True)
-ax2.legend()
+# Example usage
+if __name__ == "__main__":
+    # Sample data
+    data = pd.DataFrame({
+        'timestamp': pd.date_range(start='1/1/2020', periods=10, freq='D'),
+        'close': [1.1, 1.2, 1.3, 1.2, 1.3, 1.4, 1.3, 1.4, 1.5, 1.6],
+        'capital': [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+        'position': [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+    })
+    data.set_index('timestamp', inplace=True)
 
-# Adjust layout and show the plot
-plt.tight_layout()
-plt.show()
+    # Calculate performance metrics
+    results = calculate_performance_metrics(data)
+    print(results)

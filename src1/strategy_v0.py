@@ -15,7 +15,7 @@ class strategy_v0:
             
             match self.signal:
                 # 1: Buy Signal
-                case 1 if self.trade_manager.capital > self.share_price + self.trade_manager.transaction_fee and self.trade_manager.in_position != 'short':
+                case 1 if self.trade_manager.capital > self.share_price + self.trade_manager.transaction_fee and self.trade_manager.in_position == None:
                     # Buy if there's enough capital
                     self.trade_manager.buy(transactions, self.share_price, self.timestamp)
                     self.trade_manager.in_position = 'long'  # Enter long in_position
@@ -42,5 +42,5 @@ class strategy_v0:
                 # Hold signal: Hold the current in_position without any transaction
                 case 0:
                     self.trade_manager.hold(transactions, self.share_price, self.timestamp)
- 
+                ## End of match
         return transactions
